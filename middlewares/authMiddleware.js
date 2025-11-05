@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const Uber = require('../model/user')
+const Uber = require('../models/user')
 
 
 

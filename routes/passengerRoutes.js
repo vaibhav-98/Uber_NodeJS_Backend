@@ -4,9 +4,9 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const router = express.Router()
 
 
-module.exports = (io) => {
+module.exports  = {
     // router.get('/bookings', authMiddleware,  getPassengerBookings)
     // router.post('/feedback', authMiddleware, provideFeedback);
     
-    return router
+    
 }

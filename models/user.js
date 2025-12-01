@@ -1,41 +1,41 @@
 const mongoose = require('mongoose');
- const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
 
-const userSchema = new mongoose.Schema ({
-    name: String,
-    email:{
-        type: String,
-        unique:true
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: {
+    type: String,
+    unique: true,
+  },
+  password: String,
+  role: {
+    type: String,
+    enum: ['driver', 'passenger'],
+  },
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'],   
+      default: 'Point',
     },
-    password:String,
-    role: {
-        type:String,
-        enum:['driver', 'passenger']
+    coordinates: {       
+      type: [Number],    // [longitude, latitude]
+      default: [0, 0],
     },
-    location: {
-        type: {
-            type: String,
-            enum:['point'],
-            default: 'Point'
-        },
-        cordinates: {
-            type: [Number],
-            default: [0,0]
-        }
-    }
-})
+  },
+});
+
+// pre-save middleware to hash password
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
 
 
-// this is a pre save middleware that runs before a document is save to  the DB
-userSchema.pre('save' , async function(next) {
-    if(!this.isModified('password')) return next();
-    this.password = await bcrypt.hash(this.password, 10);
-    next()
-})
+userSchema.methods.comparePassword = async function (password) {
+  return bcrypt.compare(password, this.password);
+};
 
-userSchema.method.comparePassword = async function(password) {
-    return brcypt.compare(password, this.password)
-}
-
-const User = mongoose.model('User', userSchema)
+const User = mongoose.model('User', userSchema);
 module.exports = User;

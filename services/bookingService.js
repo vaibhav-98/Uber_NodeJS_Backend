@@ -34,13 +34,19 @@ const findNearByDrivers = async(location, radius = 5) => {
         throw new Error ('Invalid cooardinates or radius')
     }
 
-    const nearByDrivers = await locationService.findNearByDrivers(longitude, latitude, radius);
+    const nearByDrivers = await locationService.findNearbyDriver(longitude, latitude, radius);
 
     return nearByDrivers;
 }
 
 
+const assingDriver = async (bookingId, driverId) => {
+    const booking = await bookingRepository.updateBookingStatus(bookingId, driverId, "confirmed")
+    if(!booking) throw new Error('booking already confirmed or does not exist');
+    return booking
+}
 
 
 
-module.exports = {createBooking}
+
+module.exports = {createBooking, findNearByDrivers, assingDriver}

@@ -1,4 +1,4 @@
-const redisClient = require('../utils/redisClient');
+const {redisClient} = require('../utils/redisClient');
 
 
 class LocationService {
@@ -35,11 +35,22 @@ class LocationService {
             'driver',
             longitude.toString(),
             latitude.toString(),
+            radiusKm.toString(),
             'km',
             'WITHCOORD'
         ]);
 
         return nearByDrives;
+    }
+
+    async storeNotifiedDrivers(bookingId, driverIds) {
+        for(const driverId of driverIds) {
+            await redisClient.sAdd(`notifiedDrivers:${bookingId}`, driverId)
+        }
+    }
+
+    async getNotifiedDrivers(bookingId) {
+        return await redisClient.sMembers(`notifiedDrivers:${bookingId}`)
     }
 }
 

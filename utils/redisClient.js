@@ -1,24 +1,21 @@
-const redis = require('redis')
-const dotenv = require('dotenv')
+// utils/redisClient.js
+const redis = require('redis');
+const dotenv = require('dotenv');
 
-dotenv.config()
-
+dotenv.config(); // Load environment variables from .env file
 
 const redisClient = redis.createClient({
-    url: process.env.REDIS_URI 
-})
+  url: process.env.REDIS_URI,
+});
 
 redisClient.on('connect', () => {
-    console.log('Connected tp redis');
-    
-})
-
+  console.log('Connected to Redis');
+});
 
 redisClient.on('error', (err) => {
-    console.error('Redis connection error:', err);
-    
-})
+  console.error('Redis connection error:', err);
+});
 
-redisClient.connect()
+redisClient.connect();
 
-module.exports = {redisClient}
+module.exports = { redisClient };

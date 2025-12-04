@@ -24,20 +24,22 @@ const createBooking = async({passengerId, source, destination}) => {
 
 
 
-const findNearByDrivers = async(location, radius = 5) => {
-    const longitude = parseFloat(location.longitude)
-    const latitude = parseFloat(location.latitude)
+const findNearByDrivers = async (location, radius = 5) => {
+  const longitude = parseFloat(location.latitude);
+  const latitude = parseFloat(location.longitude);
+   console.log("location ", location);
+   
+  // Ensure the radius is a number
+  const radiusKm = parseFloat(radius);
 
-    const radiusKm = parseFloat(radius);
+  if (isNaN(longitude) || isNaN(latitude) || isNaN(radiusKm)) {
+    throw new Error('Invalid coordinates or radius');
+  }
 
-    if(isNaN(longitude) || isNaN(latitude) || isNaN(radius)) {
-        throw new Error ('Invalid cooardinates or radius')
-    }
+  const nearbyDrivers = await locationService.findNearByDrivers(longitude, latitude, radiusKm);
 
-    const nearByDrivers = await locationService.findNearbyDriver(longitude, latitude, radius);
-
-    return nearByDrivers;
-}
+  return nearbyDrivers;
+};
 
 
 const assingDriver = async (bookingId, driverId) => {

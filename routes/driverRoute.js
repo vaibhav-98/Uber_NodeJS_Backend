@@ -4,7 +4,7 @@ const { getDriverBookings , updateLocation } = require('../controllers/driverCon
 
 const router = express.Router()       
 
- router.get('/bookings', authMiddleware, getDriverBookings)      
+router.get('/bookings', authMiddleware, getDriverBookings)      
 router.post('/location', authMiddleware, updateLocation)          
 
 

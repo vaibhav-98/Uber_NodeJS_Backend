@@ -4,7 +4,7 @@ const driverService = require('../services/driverService')
 const updateLocation = async (req,res) => {
     const {latitude, longitude} = req.body;
 
-    await driverService.updateLocation(req._user._id, {latitude,longitude});
+    await driverService.updateLocation(req.user._id, {latitude,longitude});
 
     res.status(201).send({success:true, error:null})
 }

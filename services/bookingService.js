@@ -22,9 +22,7 @@ const createBooking = async({passengerId, source, destination}) => {
 }
 
 
-
-
-const findNearByDrivers = async (location, radius = 5) => {
+const findNearByDrivers = async (location, radius = 15) => {
   const longitude = parseFloat(location.latitude);
   const latitude = parseFloat(location.longitude);
    console.log("location ", location);

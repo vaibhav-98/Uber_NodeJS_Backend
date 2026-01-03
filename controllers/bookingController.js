@@ -15,17 +15,34 @@ const createBooking = (io) => async (req, res) => {
     const driverIds = [];
 
     // nearbyDrivers items are typically [ member, [lon, lat] ] depending on Redis response
-    for (const driverEntry of nearByDrivers) {
-      // when WITHCOORD is used, driverEntry is [ member, [lon, lat] ] OR nested arrays
-      // normalize extraction:
-      const driverId = Array.isArray(driverEntry) ? driverEntry[0] : driverEntry;
-      const driverSocketId = await locationService.getDriverSocket(driverId);
-      console.log('driverId', driverId, 'socketId', driverSocketId);
-      if (driverSocketId) {
-        driverIds.push(driverId);
-        io.to(driverSocketId).emit('newBooking', { bookingId: booking._id, source, destination, fare: booking.fare });
-      }
-    }
+    // for (const driverEntry of nearByDrivers) {
+    //   // when WITHCOORD is used, driverEntry is [ member, [lon, lat] ] OR nested arrays
+    //   // normalize extraction:
+    //   const driverId = Array.isArray(driverEntry) ? driverEntry[0] : driverEntry;
+    //   const driverSocketId = await locationService.getDriverSocket(driverId);
+    //   console.log('driverId', driverId, 'socketId', driverSocketId);
+    //   if (driverSocketId) {
+    //     driverIds.push(driverId);
+    //     io.to(driverSocketId).emit('newBooking', { bookingId: booking._id, source, destination, fare: booking.fare });
+    //   }
+    // }
+
+    // inside createBooking controller, after finding nearByDrivers:
+  console.log('*** DEBUG nearByDrivers raw:', JSON.stringify(nearByDrivers, null, 2));
+
+ for (const driverEntry of nearByDrivers) {
+  const driverId = Array.isArray(driverEntry) ? driverEntry[0] : driverEntry;
+  console.log('Attempting lookup for driverId:', driverId);
+  const driverSocketId = await locationService.getDriverSocket(driverId);
+  console.log(' -> found socketId for', driverId, ':', driverSocketId);
+  if (driverSocketId) {
+    console.log(' -> emitting newBooking to socket', driverSocketId);
+    io.to(driverSocketId).emit('newBooking', { bookingId: booking._id, source, destination, fare: booking.fare });
+  } else {
+    console.log(' -> no socket for driver', driverId);
+  }
+}
+
 
     await locationService.storeNotifiedDrivers(booking._id, driverIds);
 

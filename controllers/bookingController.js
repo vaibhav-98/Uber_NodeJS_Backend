@@ -12,7 +12,9 @@ const createBooking = (io) => async (req, res) => {
     const nearByDrivers = await bookingService.findNearByDrivers(source);
     console.log('nearByDrivers:', nearByDrivers);
 
-    const driverIds = [];
+    const driverIds = nearByDrivers.map(driver => driver[0]);
+    console.log("driverIds......", driverIds);
+    
 
     // nearbyDrivers items are typically [ member, [lon, lat] ] depending on Redis response
     // for (const driverEntry of nearByDrivers) {
@@ -28,19 +30,20 @@ const createBooking = (io) => async (req, res) => {
     // }
 
     // inside createBooking controller, after finding nearByDrivers:
+
+
   console.log('*** DEBUG nearByDrivers raw:', JSON.stringify(nearByDrivers, null, 2));
 
  for (const driverEntry of nearByDrivers) {
   const driverId = Array.isArray(driverEntry) ? driverEntry[0] : driverEntry;
-  console.log('Attempting lookup for driverId:', driverId);
+  console.log("driver id ----", driverId);
+  
   const driverSocketId = await locationService.getDriverSocket(driverId);
-  console.log(' -> found socketId for', driverId, ':', driverSocketId);
+  
   if (driverSocketId) {
-    console.log(' -> emitting newBooking to socket', driverSocketId);
+    driverIds.push(driverId); // Save for later so we can ping them when ride is confirmed
     io.to(driverSocketId).emit('newBooking', { bookingId: booking._id, source, destination, fare: booking.fare });
-  } else {
-    console.log(' -> no socket for driver', driverId);
-  }
+  } 
 }
 
 
@@ -67,7 +70,7 @@ const confirmBooking = (io) => async (req,res) => {
             if(driverSocketId) {
                  
                 if(driverId == req.user._id) {
-                    io.to(driverSocketId).emit('rideConfirmed,', {bookingId,driverId: req.user._id});
+                    io.to(driverSocketId).emit('rideConfirmed', {bookingId,driverId: req.user._id});
                 } else {
                     io.to(driverSocketId).emit('removeBooking', { bookingId })
                 }

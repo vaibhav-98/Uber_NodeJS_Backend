@@ -3,6 +3,8 @@ const authService = require('../services/authService')
 const register = async(req,res) =>{
     try {
         const {user,token} = await authService.register(req.body);
+        //console.log({user,token});
+        
         res.status(201).send({data:{user, token}, success: true,error:null, message:"user register succefully" })
     } catch (error) {
         res.status(400).send(error.message)

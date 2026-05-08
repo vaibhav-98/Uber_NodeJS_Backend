@@ -6,7 +6,8 @@ const Uber = require('../models/user')
 const authMiddleware = async (req,res,next) => {
 
     // get token from headeer in the request
-    const token = req.header('Authorization')?.replace('Bearer', '');
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    //console.log("token : ", token);
     
     //token is not valid, access will be denied
     if(!token) return res.status(401).send('Acees Denied');

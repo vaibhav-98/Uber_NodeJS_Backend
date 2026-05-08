@@ -13,7 +13,7 @@ const createBooking = async(bookingData) => {
 const updateBookingStatus = async (bookingId, driverId, status) => {
 
     return Booking.findOneAndUpdate(
-        {i_id: bookingId, status: 'pending'},
+        {_id: bookingId, status: 'pending'},
         {driver:driverId, status},
         {new:true} 
     )

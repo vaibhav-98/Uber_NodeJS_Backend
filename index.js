@@ -17,6 +17,7 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
+
 const io = socketIo(server, {
     cors: {
       origin: "http://127.0.0.1:5500", // Update to match your frontend URL
@@ -42,10 +43,12 @@ server.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });
 
+// redis connection event
 redisClient.on('connect', () => {
   console.log('Connected to Redis');
 });
 
+//Socket connection 
 io.on('connection', (socket) => {
     console.log('A user connected');
   

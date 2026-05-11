@@ -4,12 +4,16 @@ const { redisClient } = require('../utils/redisClient');
 class LocationService {
   // store both mappings for easy lookup and cleanup
   async setDriverSocket(driverId, socketId) {
+    console.log({"diver and socket ID":driverId, socketId});
+    
     await redisClient.set(`driver:${driverId}`, socketId);
     await redisClient.set(`socket:${socketId}`, driverId);
   }
 
   async getDriverSocket(driverId) {
-    return await redisClient.get(`driver:${driverId}`);
+    const getDriverSocket = await redisClient.get(`driver:${driverId}`);
+    console.log("getDriverSocket > ", getDriverSocket);
+    return getDriverSocket;
   }
 
   async delDriverSocket(driverId) {
@@ -21,9 +25,11 @@ class LocationService {
   }
 
   async addDriverLocation(driverId, longitude, latitude) {
+    console.log({driverId, longitude, latitude});
+    
     // Redis GEOADD syntax: GEOADD key longitude latitude member
     try {
-      await redisClient.sendCommand([
+      return await redisClient.sendCommand([
         'GEOADD',
         'drivers',                  // key
         longitude.toString(),
@@ -45,7 +51,7 @@ class LocationService {
         latitude.toString(),
         radiusKm.toString(),
         'km',
-        'WITHCOORD'
+        'WITHCOORD' 
       ]);
       // nearbyDrivers is an array like: [[member, [lon, lat]], ...] (depending on client)
       return nearbyDrivers;

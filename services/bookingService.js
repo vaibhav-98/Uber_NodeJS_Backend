@@ -23,8 +23,8 @@ const createBooking = async({passengerId, source, destination}) => {
 
 
 const findNearByDrivers = async (location, radius = 15) => {
-  const longitude = parseFloat(location.latitude);
-  const latitude = parseFloat(location.longitude);
+ const latitude = parseFloat(location.latitude);
+const longitude = parseFloat(location.longitude);
    console.log("location ", location);
    
   // Ensure the radius is a number

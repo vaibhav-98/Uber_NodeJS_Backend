@@ -2,19 +2,19 @@ const driverRepository = require('../repositories/driverRepository');
 const locationService = require('../services/locationService');
 
 const updateLocation = async (driverId, { latitude, longitude }) => {
-    const lat = parseFloat(latitude);
-    const lon = parseFloat(longitude);
+    const lat = parseFloat(latitude); 
+    const lon = parseFloat(longitude); 
   
     if (isNaN(lat) || isNaN(lon)) {
       throw new Error('Invalid coordinates');
     }
   
-    console.log(`Adding to Redis: ${lon.toString()} ${lat.toString()} ${driverId}`);
+    console.log(`Adding to Redis: ${lon.toString()} ${lat.toString()} ${driverId}`); // 
   
     // Update driver's location in Redis
     try {
-        const res = await locationService.addDriverLocation(driverId, lat, lon);
-        console.log(res);
+        const res = await locationService.addDriverLocation(driverId, lon, lat);
+        console.log("res",res); //1 / 0
     } catch(error) {
         console.log(error);
     }

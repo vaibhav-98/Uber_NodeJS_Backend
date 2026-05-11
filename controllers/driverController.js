@@ -11,7 +11,7 @@ const updateLocation = async (req,res) => {
 
 
 const  getDriverBookings = async (req,res) => {
-
+     
 }
 
 
